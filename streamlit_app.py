@@ -54,16 +54,16 @@ def load_llm():
     return CTransformers(
         model="TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
         model_file="tinyllama-1.1b-chat-v1.0.Q4_0.gguf",
+        model_type="llama",  # ✅ Required for GGUF models
         config={
-            "max_new_tokens": 300,          # Reduce if it's too long, increase if cutting off
+            "max_new_tokens": 500,
             "temperature": 0.7,
             "top_p": 0.9,
-            "repetition_penalty": 1.1,
+            "repetition_penalty": 1.3,
             "context_length": 2048,
-            "stop": ["User:", "\nUser:", "\nBot:"],  # Stop early when user's next turn starts
+            "stop": ["User:", "\nUser:", "\nBot:", "Assistant:"]
         }
     )
-
 
 def format_chat_history(history):
     return "\n".join([f"User: {q}\nBot: {a}" for q, a in history])
@@ -85,7 +85,7 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 QA_TEMPLATE = """
-You are a kind, empathetic mental health assistant.
+You are a kind and empathetic mental health assistant. Keep your responses under 100 words and focused on emotional support.
 
 Context:
 {context}
@@ -140,4 +140,3 @@ if submit and user_input:
     st.session_state.history.append((user_input, answer))
     log_to_google_sheets(user_input, answer)
     st.rerun()
-
