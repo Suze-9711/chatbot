@@ -76,7 +76,7 @@ def log_to_google_sheets(question, answer):
 
 # --- Streamlit Chat UI ---
 st.set_page_config(page_title="Mental Health Chatbot", layout="centered")
-st.title("🧠 Mental Health Chatbot")
+st.title("✨ Kindstate Chatbot")
 
 # Session State
 if "history" not in st.session_state:
