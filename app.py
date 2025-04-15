@@ -1,7 +1,6 @@
 import streamlit as st
 import json
 import requests
-import csv
 import numpy as np
 import faiss
 from datetime import datetime
@@ -9,49 +8,33 @@ from sentence_transformers import SentenceTransformer
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.schema import Document
 from llama_cpp import Llama
-import os
-import requests
 from pathlib import Path
-
-def download_from_gdrive(file_id, dest_path):
-    if Path(dest_path).exists():
-        print("Model already downloaded.")
-        return
-
-    print("Downloading model from Google Drive...")
-    URL = "https://docs.google.com/uc?export=download"
-
-    session = requests.Session()
-    response = session.get(URL, params={'id': file_id}, stream=True)
-    token = None
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            token = value
-
-    if token:
-        response = session.get(URL, params={'id': file_id, 'confirm': token}, stream=True)
-
-    with open(dest_path, "wb") as f:
-        for chunk in response.iter_content(32768):
-            if chunk:
-                f.write(chunk)
-
-    print("Download complete!")
+import huggingface_hub
 
 
-model_path = "tinyllama-1.1b-chat-v1.0.Q4_0.gguf"
-download_from_gdrive("1YrYfjlVvYTQlPl7IGRY95_9CYZGYYsC1", model_path)
+MODEL_REPO = "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF"
+MODEL_FILE = "tinyllama-1.1b-chat-v1.0.Q4_0.gguf"
+MODEL_PATH = Path(MODEL_FILE)
 
-if not Path(model_path).exists():
-    raise FileNotFoundError(f"Model not found after download: {model_path}")
-else:
-    print("Model file exists, loading...")
-    llm = Llama(
-        model_path=model_path,
-        n_ctx=2048,
-        n_threads=8,
+
+
+if not MODEL_PATH.exists():
+    print("Downloading model from Hugging Face...")
+    huggingface_hub.hf_hub_download(
+        repo_id=MODEL_REPO,
+        filename=MODEL_FILE,
+        local_dir=".",
+        local_dir_use_symlinks=False
     )
+    print("Download complete.")
 
+  
+
+llm = Llama(
+    model_path=str(MODEL_PATH),
+    n_ctx=2048,
+    n_threads=8,
+)
 
 
 # --- Load and Prepare Documents ---
