@@ -55,7 +55,7 @@ def ask_llm(query):
 
 # --- Save to Google Sheets (Apps Script Webhook) ---
 def save_to_google_sheets(question, answer):
-    url = "YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL"
+    url = "https://script.google.com/macros/s/AKfycby88z9hwW2aULsDuJ8rR4w9GCO9Bnb9x9oDZlViN99K15tyFjUoCybR2J0dcz_u-oAFWQ/exec"
     payload = {"question": question, "answer": answer, "timestamp": datetime.utcnow().isoformat()}
     try:
         requests.post(url, json=payload)
@@ -63,11 +63,11 @@ def save_to_google_sheets(question, answer):
         print("Failed to log to Google Sheets:", e)
 
 # --- Streamlit UI ---
-st.set_page_config(page_title="RAG Chatbot", layout="centered")
-st.title("📚🧠 RAG Chatbot")
+st.set_page_config(page_title="Chatbot", layout="centered")
+st.title("Chatbot")
 
 query = st.text_input("Ask a question...")
 if query:
     answer = ask_llm(query)
-    st.markdown(f"**🧠 Bot:** {answer}")
+    st.markdown(f"** Chat Bot:** {answer}")
     save_to_google_sheets(query, answer)
