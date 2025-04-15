@@ -19,7 +19,8 @@ import gdown
 
 def download_rag():
     if not os.path.exists("RAG.jsonl"):
-        gdown.download("https://drive.google.com/file/d/1_MyPdp6xfwJcLtkroatCuOgm6GW410rj/view?usp=sharing", "RAG.jsonl", quiet=False)
+        url = "https://drive.google.com/uc?id=1_MyPdp6xfwJcLtkroatCuOgm6GW410rj"
+        gdown.download(url, "RAG.jsonl", quiet=False)
 
 # --- Helper Functions ---
 def encrypt(text):
@@ -43,6 +44,7 @@ def load_vectorstore():
     if os.path.exists("faiss_index/index.faiss"):
         return FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
     else:
+        download_rag()
         docs = load_docs()
         db = FAISS.from_documents(docs, embeddings)
         db.save_local("faiss_index")
