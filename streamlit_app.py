@@ -14,6 +14,13 @@ from langchain.prompts import PromptTemplate
 # --- Config ---
 WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby88z9hwW2aULsDuJ8rR4w9GCO9Bnb9x9oDZlViN99K15tyFjUoCybR2J0dcz_u-oAFWQ/exec"
 
+
+import gdown
+
+def download_rag():
+    if not os.path.exists("RAG.jsonl"):
+        gdown.download("https://drive.google.com/file/d/1_MyPdp6xfwJcLtkroatCuOgm6GW410rj/view?usp=sharing", "RAG.jsonl", quiet=False)
+
 # --- Helper Functions ---
 def encrypt(text):
     return hashlib.sha256(text.encode()).hexdigest()
